@@ -5,9 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Шинэ жилийн мэндчилгээ</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Previous styles remain the same until canvas -->
     <style>
-        /* Previous styles remain unchanged */
+        @font-face {
+            font-family: 'MongolianBaiti';
+            src: local('Mongolian Baiti');
+            unicode-range: U+0000-00FF, U+0400-045F, U+1800-18AF, U+202F;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .logo-container {
+            margin-top: 40px;
+            margin-bottom: 60px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            z-index: 2;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo {
+            width: 100%;
+            height: auto;
+        }
+
+        .text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            text-align: center;
+            width: 100%;
+            font-feature-settings: "ss01" 1;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 0;
+        }
+
+        .yellow-text {
+            color: #ffff00;
+            font-size: 36px;
+            font-family: 'Nunito Sans', 'MongolianBaiti', sans-serif;
+            margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
+            opacity: 0.9;
+            padding: 0 15px;
+            line-height: 1.4;
+            letter-spacing: 0.5px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        @media (max-width: 768px) {
+            .yellow-text {
+                font-size: 28px;
+                margin: 15px 0;
+            }
+            
+            .logo-container {
+                width: 150px;
+                height: 150px;
+                margin-top: 20px;
+                margin-bottom: 40px;
+            }
+        }
+
+        .music-button {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: transparent;
+            border: 2px solid #0f0;
+            color: #0f0;
+            padding: 10px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 2;
+            transition: all 0.3s ease;
+            font-family: 'Nunito Sans', 'MongolianBaiti', sans-serif;
+        }
+
+        .music-button:hover {
+            background: rgba(0, 255, 0, 0.2);
+        }
+
         #matrixRain {
             position: fixed;
             top: 0;
@@ -15,16 +113,46 @@
             width: 100%;
             height: 100%;
             z-index: 1;
-            background: #000;
         }
     </style>
 </head>
 <body>
-    <!-- Previous HTML structure remains unchanged -->
-    <script>
-        // Previous music control code remains unchanged
+    <canvas id="matrixRain"></canvas>
 
-        // Improved Matrix Rain Effect
+    <div class="logo-container">
+        <img src="https://raw.githubusercontent.com/nbilgee/newyear21.github.io/master/img/logo.png" alt="ХМТАЦ Logo" class="logo">
+    </div>
+
+    <div class="text-container">
+        <div class="yellow-text">Танд шинэ он,</div>
+        <div class="yellow-text">шинэ жилийн</div>
+        <div class="yellow-text">баярын мэндийг</div>
+        <div class="yellow-text">хүргэе!</div>
+    </div>
+
+    <button class="music-button" onclick="toggleMusic()" id="musicBtn">Дуу тоглуулах</button>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const music = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicBtn.textContent = 'Дуу тоглуулах';
+            } else {
+                music.play();
+                musicBtn.textContent = 'Дууг зогсоох';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Matrix rain effect
         const canvas = document.getElementById('matrixRain');
         const ctx = canvas.getContext('2d');
 
@@ -35,77 +163,50 @@
         }
         setCanvasSize();
 
-        const mongolianText = "ХМТАЦ ШИНЭ ЖИЛИЙН МЭНД ХҮРГЭЕ АЗ ЖАРГАЛ ЭРҮҮЛ ЭНХ БАЯР БАЯСГАЛАН";
-        const characters = mongolianText.split('');
+        const mongolianText = [
+            "ХМТАЦ", "шинэ", "жилийн", "мэнд", "хүргэе",
+            "Шинэ", "оны", "мэнд!", "ХМТАЦ",
+            "Эрүүл", "энх,", "аз", "жаргалтай", "байх", "болтугай"
+        ];
 
         const fontSize = 14;
         const columns = Math.floor(canvas.width/fontSize);
         const drops = new Array(columns).fill(1);
-        
-        // Store the color values for each drop
-        const greenValues = new Array(columns).fill(0);
 
         function drawMatrix() {
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            // Add semi-transparent black layer
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+            // Set text style
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            // Draw the text
             for(let i = 0; i < drops.length; i++) {
-                // Get random character
-                const char = characters[Math.floor(Math.random() * characters.length)];
-                
-                // Calculate green intensity
-                if (drops[i] * fontSize < canvas.height) {
-                    greenValues[i] = Math.min(255, greenValues[i] + 5);
-                }
-                
-                // Set dynamic color based on position
-                const green = Math.min(255, greenValues[i]);
-                ctx.fillStyle = `rgb(0, ${green}, 0)`;
-                
-                // Set font with proper size
-                ctx.font = `${fontSize}px monospace`;
+                // Get random Mongolian text
+                const text = mongolianText[Math.floor(Math.random() * mongolianText.length)];
                 
                 // Draw the character
-                const x = i * fontSize;
-                const y = drops[i] * fontSize;
-                ctx.fillText(char, x, y);
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-                // Reset when reaching bottom
-                if(y > canvas.height && Math.random() > 0.975) {
+                // Reset drop if it's at the bottom
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
                     drops[i] = 0;
-                    greenValues[i] = 0;
                 }
 
-                // Move drop down
                 drops[i]++;
-            }
-
-            // Add bright leading characters
-            ctx.fillStyle = '#fff';
-            for(let i = 0; i < drops.length; i++) {
-                if(drops[i] === 1) {
-                    const char = characters[Math.floor(Math.random() * characters.length)];
-                    ctx.fillText(char, i * fontSize, drops[i] * fontSize);
-                }
             }
         }
 
-        // Faster animation for smoother effect
-        setInterval(drawMatrix, 50);
+        // Animation loop
+        setInterval(drawMatrix, 70);
 
         // Handle window resize
         window.addEventListener('resize', () => {
             setCanvasSize();
-            // Adjust drops array for new width
-            const newColumns = Math.floor(canvas.width/fontSize);
-            if (newColumns > drops.length) {
-                const extension = new Array(newColumns - drops.length).fill(1);
-                drops.push(...extension);
-                greenValues.push(...new Array(newColumns - greenValues.length).fill(0));
-            } else {
-                drops.length = newColumns;
-                greenValues.length = newColumns;
-            }
+            drops.length = Math.ceil(canvas.width/fontSize);
+            drops.fill(1);
         });
     </script>
 </body>
