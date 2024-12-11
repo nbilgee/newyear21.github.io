@@ -137,76 +137,74 @@
     </audio>
 
     <script>
-        const music = document.getElementById('bgMusic');
-        const musicBtn = document.getElementById('musicBtn');
-        let isPlaying = false;
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            const music = document.getElementById('bgMusic');
+            const musicBtn = document.getElementById('musicBtn');
+            let isPlaying = false;
 
-        function toggleMusic() {
-            if (isPlaying) {
-                music.pause();
-                musicBtn.textContent = 'Дуу тоглуулах';
-            } else {
-                music.play();
-                musicBtn.textContent = 'Дууг зогсоох';
-            }
-            isPlaying = !isPlaying;
-        }
-
-        // Matrix rain effect
-        const canvas = document.getElementById('matrixRain');
-        const ctx = canvas.getContext('2d');
-
-        // Set canvas size
-        function setCanvasSize() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        setCanvasSize();
-
-        const mongolianText = [
-            "ХМТАЦ", "шинэ", "жилийн", "мэнд", "хүргэе",
-            "Шинэ", "оны", "мэнд!", "ХМТАЦ",
-            "Эрүүл", "энх,", "аз", "жаргалтай", "байх", "болтугай"
-        ];
-
-        const fontSize = 14;
-        const columns = Math.floor(canvas.width/fontSize);
-        const drops = new Array(columns).fill(1);
-
-        function drawMatrix() {
-            // Add semi-transparent black layer
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Set text style
-            ctx.fillStyle = '#0F0';
-            ctx.font = fontSize + 'px monospace';
-
-            // Draw the text
-            for(let i = 0; i < drops.length; i++) {
-                // Get random Mongolian text
-                const text = mongolianText[Math.floor(Math.random() * mongolianText.length)];
-                
-                // Draw the character
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                // Reset drop if it's at the bottom
-                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
+            function toggleMusic() {
+                if (isPlaying) {
+                    music.pause();
+                    musicBtn.textContent = 'Дуу тоглуулах';
+                } else {
+                    music.play();
+                    musicBtn.textContent = 'Дууг зогсоох';
                 }
-
-                drops[i]++;
+                isPlaying = !isPlaying;
             }
-        }
 
-        // Animation loop
-        setInterval(drawMatrix, 70);
+            // Make toggleMusic available globally
+            window.toggleMusic = toggleMusic;
 
-        // Handle window resize
-        window.addEventListener('resize', () => {
+            // Matrix rain effect
+            const canvas = document.getElementById('matrixRain');
+            const ctx = canvas.getContext('2d');
+
+            // Set canvas size
+            function setCanvasSize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
             setCanvasSize();
-            drops.length = Math.ceil(canvas.width/fontSize);
-            drops.fill(1);
+
+            const mongolianText = [
+                "ХМТАЦ", "шинэ", "жилийн", "мэнд", "хүргэе",
+                "Шинэ", "оны", "мэнд!", "ХМТАЦ",
+                "Эрүүл", "энх,", "аз", "жаргалтай", "байх", "болтугай"
+            ];
+
+            const fontSize = 14;
+            const columns = Math.floor(canvas.width/fontSize);
+            const drops = new Array(columns).fill(1);
+
+            function drawMatrix() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                ctx.fillStyle = '#0F0';
+                ctx.font = fontSize + 'px monospace';
+
+                for(let i = 0; i < drops.length; i++) {
+                    const text = mongolianText[Math.floor(Math.random() * mongolianText.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+
+            // Start the animation
+            setInterval(drawMatrix, 70);
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                setCanvasSize();
+                drops.length = Math.ceil(canvas.width/fontSize);
+                drops.fill(1);
+            });
         });
     </script>
 </body>
