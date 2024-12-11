@@ -4,7 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Шинэ жилийн мэндчилгээ</title>
+    <!-- Add Google Fonts - Mongolian -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'MongolianFont';
+            src: url('https://fonts.gstatic.com/s/roboto/v30/KFOmCnqEu92Fr1Me5Q.ttf') format('truetype');
+            unicode-range: U+0000-00FF, U+0400-045F, U+1800-18AF;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -45,16 +53,25 @@
             z-index: 2;
             text-align: center;
             width: 100%;
-            font-family: sans-serif;
         }
 
         .yellow-text {
             color: #ffff00;
             font-size: 36px;
-            font-family: cursive;
+            font-family: 'Roboto', 'MongolianFont', sans-serif;
             margin: 20px 0;
             text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
             opacity: 0.9;
+            padding: 0 15px;
+            line-height: 1.4;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .yellow-text {
+                font-size: 28px;
+                margin: 15px 0;
+            }
         }
 
         .music-button {
@@ -71,6 +88,7 @@
             border-radius: 5px;
             z-index: 2;
             transition: all 0.3s ease;
+            font-family: 'Roboto', 'MongolianFont', sans-serif;
         }
 
         .music-button:hover {
@@ -107,13 +125,14 @@
         <div class="yellow-text">хүргэе!</div>
     </div>
 
-    <button class="music-button" onclick="toggleMusic()" id="musicBtn">Play Music</button>
+    <button class="music-button" onclick="toggleMusic()" id="musicBtn">Дуу тоглуулах</button>
 
     <audio id="bgMusic" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <script>
+        // Previous JavaScript code remains the same
         const music = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
