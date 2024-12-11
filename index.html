@@ -26,7 +26,7 @@
             background: rgba(255, 255, 255, 0.9);
             padding: 10px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .logo {
@@ -37,17 +37,18 @@
         h1 {
             margin: 0;
             padding: 0;
-            color: #111;
+            color: #fff;
             font-size: 5em;
             text-align: center;
             z-index: 1;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         h1 span {
             display: inline-block;
             margin: 0;
             padding: 0;
-            animation: matrixAnimate 3.5s linear infinite;
+            animation: textAnimate 3.5s linear infinite;
         }
 
         .typing-text {
@@ -62,6 +63,7 @@
             border-right: 3px solid #0f0;
             animation: typing 4s steps(40) infinite;
             z-index: 1;
+            text-shadow: 0 0 5px #0f0;
         }
 
         .controls {
@@ -93,6 +95,7 @@
             top: 0;
             left: 0;
             z-index: 0;
+            opacity: 0.7;
         }
 
         @keyframes fadeIn {
@@ -107,18 +110,16 @@
             100% { width: 0; }
         }
 
-        @keyframes matrixAnimate {
+        @keyframes textAnimate {
             0%, 100% {
-                color: #0f0;
+                color: #fff;
                 filter: blur(1px);
-                text-shadow: 0 0 10px #0f0,
-                            0 0 20px #0f0,
-                            0 0 40px #0f0,
-                            0 0 80px #0f0,
-                            0 0 120px #0f0;
+                text-shadow: 0 0 10px #fff,
+                            0 0 20px #fff,
+                            0 0 40px #fff;
             }
             5%, 95% {
-                color: #020;
+                color: #eee;
                 filter: blur(0px);
                 text-shadow: none;
             }
@@ -147,12 +148,22 @@
     </audio>
 
     <script>
-        // Music control with autoplay
+        // Music control with forced autoplay attempt
         const music = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = true;
 
-        // Typing effect texts
+        // Function to force play attempt
+        function forcePlayAttempt() {
+            music.play().then(() => {
+                isPlaying = true;
+                musicBtn.textContent = 'Pause Music';
+            }).catch(e => {
+                console.log('Autoplay prevented:', e);
+                setTimeout(forcePlayAttempt, 1000); // Retry after 1 second
+            });
+        }
+
         const texts = [
             "ХМТАЦ Шинэ жилийн мэнд хүргэе! _",
             "Шинэ оны мэнд! ХМТАЦ _",
@@ -169,7 +180,6 @@
         setInterval(updateTypingText, 4000);
         updateTypingText();
 
-        // Matrix rain effect
         const canvas = document.getElementById('matrixRain');
         const ctx = canvas.getContext('2d');
 
@@ -190,10 +200,10 @@
             drops[x] = 1;
 
         function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.04)";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.fillStyle = "#0F0";
+            ctx.fillStyle = "#0f0"; // Matrix green
             ctx.font = fontSize + "px monospace";
 
             for(let i = 0; i < drops.length; i++) {
@@ -207,21 +217,12 @@
             }
         }
 
-        setInterval(draw, 35);
+        setInterval(draw, 70);
 
-        window.addEventListener('load', () => {
-            try {
-                music.play().then(() => {
-                    isPlaying = true;
-                    musicBtn.textContent = 'Pause Music';
-                }).catch(() => {
-                    isPlaying = false;
-                    musicBtn.textContent = 'Play Music';
-                });
-            } catch (e) {
-                console.log('Autoplay failed:', e);
-            }
-        });
+        // Try to autoplay immediately and on user interaction
+        document.addEventListener('click', forcePlayAttempt);
+        document.addEventListener('keypress', forcePlayAttempt);
+        window.addEventListener('load', forcePlayAttempt);
 
         function toggleMusic() {
             if (isPlaying) {
