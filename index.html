@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Шинэ жилийн мэндчилгээ</title>
-    <!-- Add Mongolian-compatible Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
         @font-face {
@@ -54,6 +53,8 @@
             text-align: center;
             width: 100%;
             font-feature-settings: "ss01" 1;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px 0;
         }
 
         .yellow-text {
@@ -105,12 +106,13 @@
             background: rgba(0, 255, 0, 0.2);
         }
 
-        canvas {
+        #matrixRain {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 1;
-            opacity: 0.7;
         }
     </style>
 </head>
@@ -135,7 +137,6 @@
     </audio>
 
     <script>
-        // Previous JavaScript remains the same
         const music = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = false;
@@ -151,52 +152,61 @@
             isPlaying = !isPlaying;
         }
 
+        // Matrix rain effect
         const canvas = document.getElementById('matrixRain');
         const ctx = canvas.getContext('2d');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        // Set canvas size
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        setCanvasSize();
 
-        const messages = [
+        const mongolianText = [
             "ХМТАЦ", "шинэ", "жилийн", "мэнд", "хүргэе",
             "Шинэ", "оны", "мэнд!", "ХМТАЦ",
             "Эрүүл", "энх,", "аз", "жаргалтай", "байх", "болтугай"
         ];
-        
+
         const fontSize = 14;
-        const columns = canvas.width/fontSize;
-        const drops = [];
+        const columns = Math.floor(canvas.width/fontSize);
+        const drops = new Array(columns).fill(1);
 
-        for(let x = 0; x < columns; x++)
-            drops[x] = 1;
-
-        function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+        function drawMatrix() {
+            // Add semi-transparent black layer
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = "#0f0";
-            ctx.font = fontSize + "px monospace";
 
+            // Set text style
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            // Draw the text
             for(let i = 0; i < drops.length; i++) {
-                const text = messages[Math.floor(Math.random() * messages.length)];
-                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+                // Get random Mongolian text
+                const text = mongolianText[Math.floor(Math.random() * mongolianText.length)];
                 
-                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
-                    drops[x] = 0;
-                
+                // Draw the character
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                // Reset drop if it's at the bottom
+                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+
                 drops[i]++;
             }
         }
 
-        setInterval(draw, 70);
+        // Animation loop
+        setInterval(drawMatrix, 70);
 
+        // Handle window resize
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            setCanvasSize();
             drops.length = Math.ceil(canvas.width/fontSize);
-            for(let x = 0; x < drops.length; x++) {
-                if (!drops[x]) drops[x] = 1;
-            }
+            drops.fill(1);
         });
     </script>
 </body>
