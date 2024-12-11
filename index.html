@@ -4,246 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Шинэ жилийн мэндчилгээ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Bad+Script&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Bad Script', cursive;
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
             background: #000;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
             position: relative;
         }
 
         .logo-container {
-            margin: 20px auto;
-            animation: fadeIn 2s ease-in;
-            z-index: 1;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px;
+            margin-top: 40px;
+            margin-bottom: 60px;
+            background: #fff;
+            padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-            width: 90%;
-            max-width: 200px;
-            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            z-index: 2;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .logo {
             width: 100%;
             height: auto;
-            max-width: 200px;
-        }
-
-        .content-container {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding: 0 15px;
-            box-sizing: border-box;
-            margin: 20px 0;
         }
 
         .text-container {
-            width: 100%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
             text-align: center;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 20px;
-            border-radius: 10px;
-            margin: 10px 0;
+            width: 100%;
         }
 
         .yellow-text {
             color: #ffff00;
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 36px;
+            font-family: cursive;
+            margin: 20px 0;
             text-shadow: 0 0 10px rgba(255, 255, 0, 0.5);
-            margin: 0;
-            padding: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            word-wrap: break-word;
-            line-height: 1.4;
+            opacity: 0.9;
         }
 
-        @media (max-width: 768px) {
-            .yellow-text {
-                font-size: 24px;
-                padding: 5px;
-            }
-        }
-
-        .typing-text {
+        .music-button {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: transparent;
+            border: 2px solid #0f0;
             color: #0f0;
-            font-family: monospace;
+            padding: 10px 30px;
             font-size: 18px;
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 3px solid #0f0;
-            animation: typing 4s steps(40) infinite;
-            z-index: 1;
-            text-shadow: 0 0 5px #0f0;
-            width: 90%;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-        }
-
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
-            border-radius: 5px;
-            z-index: 1000;
-            width: 90%;
-            max-width: 300px;
-            text-align: center;
-        }
-
-        .controls button {
-            background: rgba(0, 255, 0, 0.2);
-            border: 1px solid #0f0;
-            color: #0f0;
-            padding: 10px 20px;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 5px;
+            z-index: 2;
             transition: all 0.3s ease;
-            font-size: 16px;
-            width: 100%;
-            max-width: 200px;
+        }
+
+        .music-button:hover {
+            background: rgba(0, 255, 0, 0.2);
         }
 
         canvas {
             position: fixed;
             top: 0;
             left: 0;
-            z-index: 0;
+            z-index: 1;
             opacity: 0.7;
         }
 
-        @keyframes typing {
-            0% { width: 0; }
-            50% { width: 90%; }
-            90% { width: 90%; }
-            100% { width: 0; }
+        .matrix-text {
+            color: #0f0;
+            position: absolute;
+            font-family: monospace;
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
     <canvas id="matrixRain"></canvas>
 
-    <div class="content-container">
-        <div class="logo-container">
-            <img src="https://raw.githubusercontent.com/nbilgee/newyear21.github.io/master/img/logo.png" alt="ХМТАЦ Logo" class="logo">
-        </div>
-        
-        <div class="text-container">
-            <div class="yellow-text">Танд шинэ он,</div>
-            <div class="yellow-text"> шинэ жилийн</div>
-            <div class="yellow-text">баярын мэндийг</div>
-            <div class="yellow-text">хүргэе!</div>
-        </div>
+    <div class="logo-container">
+        <img src="https://raw.githubusercontent.com/nbilgee/newyear21.github.io/master/img/logo.png" alt="ХМТАЦ Logo" class="logo">
     </div>
 
-    <div class="typing-text" id="typingText">_</div>
-
-    <div class="controls">
-        <button onclick="toggleMusic()" id="musicBtn">Pause Music</button>
+    <div class="text-container">
+        <div class="yellow-text">Танд шинэ он,</div>
+        <div class="yellow-text">шинэ жилийн</div>
+        <div class="yellow-text">баярын мэндийг</div>
+        <div class="yellow-text">хүргэе!</div>
     </div>
 
-    <audio id="bgMusic" autoplay loop>
+    <button class="music-button" onclick="toggleMusic()" id="musicBtn">Play Music</button>
+
+    <audio id="bgMusic" loop>
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
     </audio>
 
     <script>
         const music = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
-        let isPlaying = true;
-
-        function forcePlayAttempt() {
-            music.play().then(() => {
-                isPlaying = true;
-                musicBtn.textContent = 'Pause Music';
-            }).catch(e => {
-                console.log('Autoplay prevented:', e);
-                setTimeout(forcePlayAttempt, 1000);
-            });
-        }
-
-        const texts = [
-            "ХМТАЦ Шинэ жилийн мэнд хүргэе! _",
-            "Шинэ оны мэнд! ХМТАЦ _",
-            "Эрүүл энх, аз жаргалтай байх болтугай! _"
-        ];
-        let currentTextIndex = 0;
-
-        function updateTypingText() {
-            const typingElement = document.getElementById('typingText');
-            typingElement.textContent = texts[currentTextIndex];
-            currentTextIndex = (currentTextIndex + 1) % texts.length;
-        }
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            drops.length = Math.ceil(canvas.width/fontSize);
-            for(let x = 0; x < drops.length; x++) {
-                if (!drops[x]) drops[x] = 1;
-            }
-        }
-
-        setInterval(updateTypingText, 4000);
-        updateTypingText();
-
-        const canvas = document.getElementById('matrixRain');
-        const ctx = canvas.getContext('2d');
-        const fontSize = 14;
-        const drops = [];
-
-        resizeCanvas();
-
-        function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.fillStyle = "#0f0";
-            ctx.font = fontSize + "px monospace";
-
-            for(let i = 0; i < drops.length; i++) {
-                const text = texts[Math.floor(Math.random() * texts.length)];
-                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
-                
-                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
-                    drops[i] = 0;
-                
-                drops[i]++;
-            }
-        }
-
-        setInterval(draw, 70);
-
-        document.addEventListener('click', forcePlayAttempt);
-        document.addEventListener('keypress', forcePlayAttempt);
-        window.addEventListener('load', forcePlayAttempt);
-        window.addEventListener('resize', resizeCanvas);
+        let isPlaying = false;
 
         function toggleMusic() {
             if (isPlaying) {
@@ -255,6 +127,54 @@
             }
             isPlaying = !isPlaying;
         }
+
+        const canvas = document.getElementById('matrixRain');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const messages = [
+            "ХМТАЦ", "шинэ", "жилийн", "мэнд", "хүргэе",
+            "Шинэ", "оны", "мэнд!", "ХМТАЦ",
+            "Эрүүл", "энх,", "аз", "жаргалтай", "байх", "болтугай"
+        ];
+        
+        const fontSize = 14;
+        const columns = canvas.width/fontSize;
+        const drops = [];
+
+        for(let x = 0; x < columns; x++)
+            drops[x] = 1;
+
+        function draw() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "#0f0";
+            ctx.font = fontSize + "px monospace";
+
+            for(let i = 0; i < drops.length; i++) {
+                const text = messages[Math.floor(Math.random() * messages.length)];
+                ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+                
+                if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
+                    drops[i] = 0;
+                
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 70);
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            drops.length = Math.ceil(canvas.width/fontSize);
+            for(let x = 0; x < drops.length; x++) {
+                if (!drops[x]) drops[x] = 1;
+            }
+        });
     </script>
 </body>
 </html>
