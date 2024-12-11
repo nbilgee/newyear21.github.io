@@ -9,14 +9,14 @@
         body {
             font-family: 'Bad Script', cursive;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background: #000;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         .logo-container {
@@ -27,63 +27,92 @@
             padding: 10px;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            width: 90%;
+            max-width: 200px;
+            text-align: center;
         }
 
         .logo {
-            max-width: 200px;
+            width: 100%;
             height: auto;
+            max-width: 200px;
         }
 
         h1 {
             margin: 0;
-            padding: 0;
-            color: #ffee00;
-            font-size: 5em;
+            padding: 0 15px;
+            color: #fff;
+            font-size: 3em;
             text-align: center;
             z-index: 1;
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+                margin-bottom: 20px;
+            }
         }
 
         h1 span {
             display: inline-block;
-            margin: 0;
-            padding: 0;
             animation: textAnimate 3.5s linear infinite;
         }
 
         .typing-text {
             color: #0f0;
             font-family: monospace;
-            font-size: 24px;
+            font-size: 18px;
             position: fixed;
-            bottom: 50px;
-            left: 20px;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
             white-space: nowrap;
             overflow: hidden;
             border-right: 3px solid #0f0;
             animation: typing 4s steps(40) infinite;
             z-index: 1;
             text-shadow: 0 0 5px #0f0;
+            width: 90%;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .typing-text {
+                font-size: 14px;
+                bottom: 80px;
+            }
         }
 
         .controls {
             position: fixed;
             bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
             padding: 10px;
             border-radius: 5px;
             z-index: 1000;
+            width: 90%;
+            max-width: 300px;
+            text-align: center;
         }
 
         .controls button {
             background: rgba(0, 255, 0, 0.2);
             border: 1px solid #0f0;
             color: #0f0;
-            padding: 5px 10px;
+            padding: 10px 20px;
             cursor: pointer;
             border-radius: 3px;
             transition: all 0.3s ease;
+            font-size: 16px;
+            width: 100%;
+            max-width: 200px;
         }
 
         .controls button:hover {
@@ -105,8 +134,8 @@
 
         @keyframes typing {
             0% { width: 0; }
-            50% { width: 100%; }
-            90% { width: 100%; }
+            50% { width: 90%; }
+            90% { width: 90%; }
             100% { width: 0; }
         }
 
@@ -124,16 +153,29 @@
                 text-shadow: none;
             }
         }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
     </style>
 </head>
 <body>
-    <div class="logo-container">
-        <img src="https://raw.githubusercontent.com/nbilgee/newyear21.github.io/master/img/logo.png" alt="ХМТАЦ Logo" class="logo">
+    <div class="content-wrapper">
+        <div class="logo-container">
+            <img src="https://raw.githubusercontent.com/nbilgee/newyear21.github.io/master/img/logo.png" alt="ХМТАЦ Logo" class="logo">
+        </div>
+        
+        <h1>
+           Танд шинэ он,шинэ жилийн баярын мэндийг хүргэе!
+        </h1>
     </div>
-    
-    <h1>
-       Танд шинэ он, шинэ жилийн баярын мэндийг хүргэе!
-    </h1>
 
     <div class="typing-text" id="typingText">_</div>
 
@@ -148,19 +190,17 @@
     </audio>
 
     <script>
-        // Music control with forced autoplay attempt
         const music = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicBtn');
         let isPlaying = true;
 
-        // Function to force play attempt
         function forcePlayAttempt() {
             music.play().then(() => {
                 isPlaying = true;
                 musicBtn.textContent = 'Pause Music';
             }).catch(e => {
                 console.log('Autoplay prevented:', e);
-                setTimeout(forcePlayAttempt, 1000); // Retry after 1 second
+                setTimeout(forcePlayAttempt, 1000);
             });
         }
 
@@ -177,37 +217,34 @@
             currentTextIndex = (currentTextIndex + 1) % texts.length;
         }
 
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            drops.length = Math.ceil(canvas.width/fontSize);
+            for(let x = 0; x < drops.length; x++) {
+                if (!drops[x]) drops[x] = 1;
+            }
+        }
+
         setInterval(updateTypingText, 4000);
         updateTypingText();
 
         const canvas = document.getElementById('matrixRain');
         const ctx = canvas.getContext('2d');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const messages = [
-            "Шинэ", "он", "сайхан", "болог", "ХМТАЦ", "мэнд", 
-            "хүргэе", "эрүүл", "энх", "аз", "жаргал", "бүтээл",
-            "бүтээмж", "амжилт"
-        ];
-        
         const fontSize = 14;
-        const columns = canvas.width/fontSize;
         const drops = [];
 
-        for(let x = 0; x < columns; x++)
-            drops[x] = 1;
+        resizeCanvas();
 
         function draw() {
             ctx.fillStyle = "rgba(0, 0, 0, 0.1)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.fillStyle = "#0f0"; // Matrix green
+            ctx.fillStyle = "#0f0";
             ctx.font = fontSize + "px monospace";
 
             for(let i = 0; i < drops.length; i++) {
-                const text = messages[Math.floor(Math.random() * messages.length)];
+                const text = texts[Math.floor(Math.random() * texts.length)];
                 ctx.fillText(text, i*fontSize, drops[i]*fontSize);
                 
                 if(drops[i]*fontSize > canvas.height && Math.random() > 0.975)
@@ -219,10 +256,10 @@
 
         setInterval(draw, 70);
 
-        // Try to autoplay immediately and on user interaction
         document.addEventListener('click', forcePlayAttempt);
         document.addEventListener('keypress', forcePlayAttempt);
         window.addEventListener('load', forcePlayAttempt);
+        window.addEventListener('resize', resizeCanvas);
 
         function toggleMusic() {
             if (isPlaying) {
@@ -234,11 +271,6 @@
             }
             isPlaying = !isPlaying;
         }
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
     </script>
 </body>
 </html>
